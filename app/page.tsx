@@ -481,7 +481,7 @@ export default function Home() {
             <h2 id="team" className="mb-4">Meet our team</h2>
             <div className="team-cards-container">
               {[
-              { name: 'Vigen Sh.', role: 'CTO – Strategy & Architecture', imageSrc: '/space3.png' },
+              { name: 'Vig S.', role: 'CTO – Strategy & Architecture', imageSrc: '/space3.png' },
               { name: 'Gera B.', role: 'CEO & R&D Lead', imageSrc: '/whiteboard-prog-cut.png' },
               { name: 'Stas A.', role: 'Frontend Developer', imageSrc: '/toi.png' },
               { name: 'Stas B.', role: 'Backend Developer', imageSrc: '/table3.png' },
