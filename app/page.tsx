@@ -557,7 +557,7 @@ export default function Home() {
                 )}
               </form>
             </div>
-            <p>Email: <a href="mailto:team@fullstackforce.dev">team@fullstackforce.dev</a></p>
+            {/*<p>Email: <a href="mailto:team@fullstackforce.dev">team@fullstackforce.dev</a></p>*/}
           </div>
         </section>
 
