@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-{/*import Image from 'next/image'*/}
+{/*import Image from 'next/image'*/ }
 import Typewriter from "./components/Typewriter";
 import ServiceCard from './components/ServiceCard';
 import GlowCard from './components/GlowCard';
@@ -16,6 +16,7 @@ import CodeTypingAnimation from "./components/CodeTypingAnimation";
 import Orb from "./components/GlowingCircle";
 import LogoCarousel from "./components/LogoCarousel";
 import FlipCard from "./components/FlipCard";
+import ExploreProjectsCard from "./components/ExploreProjectsCard";
 
 export default function Home() {
   const missionRef = useRef(null);
@@ -249,11 +250,11 @@ export default function Home() {
       {/* Rocket launch animation - positioned outside main to be above toolbar */}
       {showRocket && (
         <div className="animation-overlay">
-          <RocketLaunchAnimation 
-            launchTriggered={launchRocket} 
+          <RocketLaunchAnimation
+            launchTriggered={launchRocket}
             buildProgress={rocketBuildProgress}
-            width="100%" 
-            height="100%" 
+            width="100%"
+            height="100%"
           />
         </div>
       )}
@@ -261,7 +262,7 @@ export default function Home() {
         {/* Section 1: Homepage */}
         <section className="section hero">
           {/*<GlowingLines />*/}
-          <Particles 
+          <Particles
             particleCount={500}
             particleSpread={5}
             speed={0.05}
@@ -278,9 +279,9 @@ export default function Home() {
           {/* Code animation - stays in hero section */}
           {showCode && (
             <div className="code-animation-container">
-              <CodeTypingAnimation 
-                autoStart={true} 
-                onLaunchTrigger={() => setLaunchRocket(true)} 
+              <CodeTypingAnimation
+                autoStart={true}
+                onLaunchTrigger={() => setLaunchRocket(true)}
                 onCodeDisappeared={() => setCodeDisappeared(true)}
                 onProgressUpdate={(progress) => setRocketBuildProgress(progress)}
               />
@@ -301,7 +302,7 @@ export default function Home() {
               <img className="hero-logo" />FullStackForce
             </h1>
             <div className="hero-typewriter">
-              <span className="typewriter-prefix" style={{ 
+              <span className="typewriter-prefix" style={{
                 fontFamily: "'Poppins', sans-serif",
                 fontWeight: 200,
                 display: 'block',
@@ -450,6 +451,8 @@ export default function Home() {
               ))}
             </div>
 
+            <ExploreProjectsCard />
+
             <h2 id="why-work-with-us" className="mt-7">Why work with us?</h2>
             <div
               ref={whyWorkRef}
@@ -481,11 +484,11 @@ export default function Home() {
             <h2 id="team" className="mb-4">Meet our team</h2>
             <div className="team-cards-container">
               {[
-              { name: 'Vig S.', role: 'CTO – Strategy & Architecture', imageSrc: '/space3.png' },
-              { name: 'Gera B.', role: 'CEO & R&D Lead', imageSrc: '/whiteboard-prog-cut.png' },
-              { name: 'Stas A.', role: 'Frontend Developer', imageSrc: '/toi.png' },
-              { name: 'Stas B.', role: 'Backend Developer', imageSrc: '/table3.png' },
-            ].map((member, idx) => (
+                { name: 'Vig S.', role: 'CTO – Strategy & Architecture', imageSrc: '/space3.png' },
+                { name: 'Gera B.', role: 'CEO & R&D Lead', imageSrc: '/whiteboard-prog-cut.png' },
+                { name: 'Stas A.', role: 'Frontend Developer', imageSrc: '/toi.png' },
+                { name: 'Stas B.', role: 'Backend Developer', imageSrc: '/table3.png' },
+              ].map((member, idx) => (
                 <TeamCard
                   key={idx}
                   imageSrc={member.imageSrc}

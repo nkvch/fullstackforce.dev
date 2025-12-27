@@ -1,0 +1,85 @@
+.explore-projects-card {
+    position: relative;
+    background-color: #1d0a3e;
+    border-radius: 20px;
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    margin-top: 1.5rem;
+    border: 1px solid #333;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.explore-projects-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/lines_front_section.png');
+    background-color: rgba(91, 58, 237, 0.2);
+    /*rgba(91, 58, 237, 0.2)*/
+    /* Purple overlay */
+    background-blend-mode: overlay;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.4;
+    /* Removed heavy grayscale to allow some color, or keeping it but blending */
+    filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(240deg) saturate(2);
+    z-index: 1;
+}
+
+.explore-projects-title {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    font-family: 'Funnel Display', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.explore-projects-button {
+    position: relative;
+    z-index: 2;
+    background-color: #f9f8f8;
+    color: #000;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.8rem 1.8rem;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.explore-projects-button:hover {
+    background-color: #b59af3;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .explore-projects-card {
+        flex-direction: column;
+        padding: 2rem 1.5rem;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .explore-projects-title {
+        font-size: 1.5rem;
+    }
+
+    .explore-projects-card::before {
+        background-size: 220%;
+        background-position: center;
+    }
+}

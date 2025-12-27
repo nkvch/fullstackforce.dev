@@ -16,6 +16,8 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+/* Products route styles live in `app/products/products.css` */
+
 .section {
   min-height: 110vh;
   display: flex;

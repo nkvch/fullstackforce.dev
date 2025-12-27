@@ -1,0 +1,284 @@
+/* InfoDotDiagram.css */
+
+.infodot-diagram-root {
+    position: relative;
+    width: 100%;
+    margin-top: 60px;
+}
+
+.diagram-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1000 / 420;
+    min-height: 360px;
+    overflow: hidden;
+}
+
+/* center area */
+.diagram-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(320px, 36%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: -20px;
+    /* Negative gap to lift keypill closer */
+    z-index: 1;
+}
+
+.diagram-dot-image {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+}
+
+.diagram-dot-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    color: #fff;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    letter-spacing: 0.14em;
+    font-weight: 900;
+}
+
+.diagram-dot-label .big {
+    font-size: 52px;
+    line-height: 1;
+}
+
+.diagram-dot-label .small {
+    font-size: 22px;
+    line-height: 1;
+    opacity: 0.95;
+}
+
+.diagram-keypill {
+    width: 150px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.55);
+    border-radius: 999px;
+    padding: 10px 14px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    backdrop-filter: blur(6px);
+    margin-top: -65px;
+    /* Lift higher */
+}
+
+.diagram-keypill .k {
+    color: #475569;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.diagram-keypill .v {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #0f172a;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #eef2ff, #ffffff);
+    border: 1px solid rgba(148, 163, 184, 0.55);
+}
+
+/* cards */
+.diagram-card {
+    position: absolute;
+    width: 260px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.55);
+    border-radius: 18px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
+    padding: 14px 16px;
+    backdrop-filter: blur(6px);
+    z-index: 4;
+}
+
+.diagram-card h3 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    letter-spacing: 0.01em;
+}
+
+.diagram-card p {
+    margin: 0;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.diagram-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0b1220;
+    background: linear-gradient(180deg, #ffffff, #f1f5f9);
+    border: 1px solid rgba(148, 163, 184, 0.55);
+    margin-bottom: 10px;
+}
+
+.diagram-badge .dotmini {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #06b6d4, #2563eb);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+
+/* positions */
+.c-settings {
+    left: 56px;
+    top: 44px;
+}
+
+.c-summary {
+    left: 56px;
+    bottom: 48px;
+}
+
+.c-stop {
+    right: 56px;
+    top: 36px;
+}
+
+.c-manual {
+    right: 56px;
+    top: 170px;
+}
+
+.c-role {
+    right: 56px;
+    bottom: 52px;
+}
+
+/* connectors */
+.diagram-links {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.link {
+    stroke: url(#linkGradient);
+    stroke-width: 3;
+    fill: none;
+    stroke-dasharray: 8 4;
+    stroke-linecap: round;
+}
+
+.linkGlow {
+    stroke: rgba(6, 182, 212, 0.3);
+    stroke-width: 8;
+    fill: none;
+    stroke-dasharray: 8 4;
+    stroke-linecap: round;
+    filter: blur(2px);
+}
+
+/* responsive */
+@media (max-width: 980px) {
+    .diagram-stage {
+        aspect-ratio: 1000 / 560;
+    }
+
+    .diagram-card {
+        width: 240px;
+    }
+
+    .diagram-center {
+        transform: translate(-50%, -45%);
+    }
+
+    .c-settings {
+        left: 24px;
+        top: 28px;
+    }
+
+    .c-summary {
+        left: 24px;
+        bottom: 28px;
+    }
+
+    .c-stop {
+        right: 24px;
+        top: 22px;
+    }
+
+    .c-manual {
+        right: 24px;
+        top: 170px;
+    }
+
+    .c-role {
+        right: 24px;
+        bottom: 28px;
+    }
+}
+
+@media (max-width: 760px) {
+    .diagram-stage {
+        aspect-ratio: 1000 / 760;
+    }
+
+    .diagram-card {
+        width: calc(50% - 24px);
+    }
+
+    .diagram-center {
+        width: 100%;
+    }
+
+    .diagram-dot {
+        width: 190px;
+        height: 190px;
+    }
+
+    .diagram-keypill {
+        width: 290px;
+    }
+
+    .c-settings {
+        left: 14px;
+        top: 18px;
+    }
+
+    .c-stop {
+        right: 14px;
+        top: 18px;
+    }
+
+    .c-summary {
+        left: 14px;
+        bottom: 18px;
+    }
+
+    .c-role {
+        right: 14px;
+        bottom: 18px;
+    }
+
+    .c-manual {
+        right: 14px;
+        top: unset;
+        bottom: 120px;
+    }
+}

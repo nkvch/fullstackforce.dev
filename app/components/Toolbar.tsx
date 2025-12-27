@@ -1,12 +1,23 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Toolbar: React.FC = () => {
   const [showLogo, setShowLogo] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   useEffect(() => {
     const heroSection = document.querySelector<HTMLElement>(".hero");
-    if (!heroSection) return;
+    if (!heroSection) {
+      // On pages without a hero section, the toolbar should default to the "scrolled" state
+      // so the logo remains visible.
+      setShowLogo(true);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -27,28 +38,42 @@ const Toolbar: React.FC = () => {
 
   return (
     <nav className={`toolbar ${showLogo ? "show-logo" : ""} ${isMenuOpen ? "menu-open" : ""}`}> 
-      <a
-        href="#"
-        className="logo"
-        style={{ opacity: showLogo ? 1 : 0, transition: "opacity 0.5s ease" }}
-      >
-        <img src="/logo.png" alt="FullStackForce Logo" className="logo-image" />
-        FullStackForce
-      </a>
+      {isHome ? (
+        <a
+          href="#"
+          className="logo"
+          style={{ opacity: showLogo ? 1 : 0, transition: "opacity 0.5s ease" }}
+        >
+          <img src="/logo.png" alt="FullStackForce Logo" className="logo-image" />
+          FullStackForce
+        </a>
+      ) : (
+        <Link
+          href="/"
+          className="logo"
+          style={{ opacity: showLogo ? 1 : 0, transition: "opacity 0.5s ease" }}
+        >
+          <img src="/logo.png" alt="FullStackForce Logo" className="logo-image" />
+          FullStackForce
+        </Link>
+      )}
       <ul
         className={`toolbar-links ${showLogo ? "toolbar-links-right" : "toolbar-links-center"}`}
       >
         <li>
-          <a href="#services">Services</a>
+          <Link href={isHome ? "#services" : "/#services"}>Services</Link>
         </li>
         <li>
-          <a href="#projects">Projects</a>
+          <Link href={isHome ? "#projects" : "/#projects"}>Projects</Link>
         </li>
         <li>
-          <a href="#team">Team</a>
+          <Link href={isHome ? "#team" : "/#team"}>Team</Link>
         </li>
         <li>
-          <a href="#page-bottom">Contact</a>
+          <Link href={isHome ? "#page-bottom" : "/#page-bottom"}>Contact</Link>
+        </li>
+        <li>
+          <Link href="/products">Products</Link>
         </li>
       </ul>
 
@@ -67,10 +92,11 @@ const Toolbar: React.FC = () => {
       {isMenuOpen && (
         <div className="mobile-menu">
           <ul>
-            <li><a href="#services" onClick={handleLinkClick}>Services</a></li>
-            <li><a href="#projects" onClick={handleLinkClick}>Projects</a></li>
-            <li><a href="#team" onClick={handleLinkClick}>Team</a></li>
-            <li><a href="#page-bottom" onClick={handleLinkClick}>Contact</a></li>
+            <li><Link href={isHome ? "#services" : "/#services"} onClick={handleLinkClick}>Services</Link></li>
+            <li><Link href={isHome ? "#projects" : "/#projects"} onClick={handleLinkClick}>Projects</Link></li>
+            <li><Link href={isHome ? "#team" : "/#team"} onClick={handleLinkClick}>Team</Link></li>
+            <li><Link href={isHome ? "#page-bottom" : "/#page-bottom"} onClick={handleLinkClick}>Contact</Link></li>
+            <li><Link href="/products" onClick={handleLinkClick}>Products</Link></li>
           </ul>
         </div>
       )}
