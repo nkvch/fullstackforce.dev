@@ -17,7 +17,8 @@
 
   color: var(--gray-800);
   background: linear-gradient(to bottom, #ffffff, var(--blue-50));
-  overflow-x: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
   /* Prevent horizontal scroll from animations */
 }
 
@@ -228,7 +229,6 @@
   transform: translateY(-1px);
 }
 
-/* Antigravity hero + overlay (reuse your existing classes) */
 .products .products-fullbleed {
   position: relative;
   width: 100%;
