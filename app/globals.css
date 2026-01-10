@@ -1562,24 +1562,23 @@ body {
 .toolbar-links {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
   display: flex;
   gap: 1.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
-  transition: left 0.5s ease, right 0.5s ease, transform 0.5s ease;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .toolbar-links-center {
-  left: 50%;
   transform: translate(-50%, -50%);
   gap: 10rem;
 }
 
 .toolbar-links-right {
-  left: calc(100% - 2rem);
-  transform: translate(-100%, -50%);
+  transform: translate(calc(-100% + 50vw - 2rem), -50%);
 }
 
 .toolbar .logo {
