@@ -97,21 +97,21 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
 
       if (width <= 480) {
         setRocketBaseScale(0.4);
-        setRocketStartBottomPct(-10);
+        setRocketStartBottomPct(-16);
         setRocketStartRightPct(4);
         setMotionParams({
           initialVelocity: 0,
-          baseAcceleration: 0.0005,
+          baseAcceleration: 0.001,
           accelerationGrowthRate: 0.0052,
           timeStep: 0.016,
         });
       } else if (width <= 768) {
         setRocketBaseScale(0.6);
-        setRocketStartBottomPct(-10);
+        setRocketStartBottomPct(-16);
         setRocketStartRightPct(4);
         setMotionParams({
           initialVelocity: 0,
-          baseAcceleration: 0.0005,
+          baseAcceleration: 0.001,
           accelerationGrowthRate: 0.0052,
           timeStep: 0.016,
         });

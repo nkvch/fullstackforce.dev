@@ -48,11 +48,13 @@ body {
 @media (max-width: 768px) {
     .hero {
         min-height: 100vh;
+        margin-bottom: 0 !important;
     }
 }
 @media (max-width: 480px) {
     .hero {
         min-height: 100vh;
+        margin-bottom: 0 !important;
     }
 }
 
