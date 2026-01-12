@@ -47,14 +47,22 @@ body {
 /* --- Responsive Hero Section --- */
 @media (max-width: 768px) {
     .hero {
-        min-height: 100vh;
+        min-height: 110vh;
         margin-bottom: 0 !important;
+    }
+    .section2 {
+        margin-top: -3rem;
+        padding-top: 10rem !important;
     }
 }
 @media (max-width: 480px) {
     .hero {
-        min-height: 100vh;
+        min-height: 110vh;
         margin-bottom: 0 !important;
+    }
+    .section2 {
+        margin-top: -3rem;
+        padding-top: 10rem !important;
     }
 }
 
@@ -1683,7 +1691,7 @@ body {
 
 .aurora-container {
   width: 100%;
-  height: 4%;
+  height: 15%;
   position: absolute;
   top: 0;
   left: 0;

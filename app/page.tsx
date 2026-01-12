@@ -332,11 +332,11 @@ export default function Home() {
           <Aurora
             colorStops={["#5b02e1", "#6B1DB4", "#5b02e1"]}
             amplitude={0.5}
-            blend={0.7}
+            blend={0.8}
             speed={1.5}
             brightness={1.4}
             contrast={1.9}
-            opacity={0.3}
+            opacity={0.15}
             edgeBrightness={0.5}
           />
           <div className="section-content">
