@@ -38,7 +38,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
   const [smokePlumes, setSmokePlumes] = useState<any[]>([]);
   // responsive rocket base transform and start position
   const [rocketBaseScale, setRocketBaseScale] = useState(0.7);
-  const [rocketStartBottomPct, setRocketStartBottomPct] = useState(-11.5);
+  const [rocketStartBottomPct, setRocketStartBottomPct] = useState(-100); // Start off-screen
   const [rocketStartRightPct, setRocketStartRightPct] = useState(5);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [motionParams, setMotionParams] = useState<MotionParams>({
@@ -48,8 +48,8 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
     timeStep: 0.016,
   });
 
-  // horizontal factor for trajectory; 0 on small screens for straight-up flight
-  const horizontalFactor = isSmallScreen ? 0 : 0.35;
+  // horizontal factor for trajectory; smaller on mobile to stay on screen
+  const horizontalFactor = isSmallScreen ? 0.35 : 0.35;
   
   const animationRef = useRef<number | null>(null);
   const rocketRef = useRef<HTMLDivElement | null>(null);
@@ -83,17 +83,17 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
       setIsSmallScreen(width <= 480);
       if (width <= 480) {
         setRocketBaseScale(0.4);
-        setRocketStartBottomPct(32);
+        setRocketStartBottomPct(-10);
         setRocketStartRightPct(4);
         setMotionParams({
           initialVelocity: 0,
-          baseAcceleration: 0.0002,
+          baseAcceleration: 0.0005,
           accelerationGrowthRate: 0.0052,
-          timeStep: 0.001,
+          timeStep: 0.016,
         });
       } else if (width <= 768) {
         setRocketBaseScale(0.6);
-        setRocketStartBottomPct(38);
+        setRocketStartBottomPct(-10);
         setRocketStartRightPct(4);
         setMotionParams({
           initialVelocity: 0,
@@ -103,7 +103,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
         });
       } else {
         setRocketBaseScale(0.7);
-        setRocketStartBottomPct(35);
+        setRocketStartBottomPct(-11.5);
         setRocketStartRightPct(5);
         setMotionParams({
           initialVelocity: 0,
@@ -116,14 +116,14 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
     applyResponsiveRocket();
     window.addEventListener('resize', applyResponsiveRocket);
     return () => window.removeEventListener('resize', applyResponsiveRocket);
-  }, []);
+  }, [mounted]);
 
   const startLaunchSequence = () => {
     setShowFlame(true);
     // Wait 1 second with flames on before rocket starts moving
     setTimeout(() => {
       animateRocket();
-    }, 200);
+    }, 1000);
   };
 
   const animateRocket = () => {
@@ -145,8 +145,8 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
       position += velocity;
 
       // Calculate turn progress
-      const rotationStart = isSmallScreen ? 0 : 150; // Start turning earlier
-      const rotationRamp = isSmallScreen ? 400 : 2000; // Much longer ramp - keep turning
+      const rotationStart = isSmallScreen ? 20 : 150; // Start turning earlier
+      const rotationRamp = isSmallScreen ? 2500 : 2000; // Much longer ramp - maintain curve throughout flight
       const turnEnd = rotationStart + rotationRamp;
       
       // Phase 1: Before turn (vertical flight)
@@ -184,7 +184,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
       
       const deltaX = futureXPos - xPos;
       const deltaY = -30; // lookAhead distance
-      const dynamicAngle = isSmallScreen ? 0 : Math.atan2(deltaX, -deltaY) * 180 / Math.PI;
+      const dynamicAngle = Math.atan2(deltaX, -deltaY) * 180 / Math.PI;
       
       previousXPos = xPos;
 
@@ -285,8 +285,8 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
             style={{
               position: 'absolute',
               bottom: `${rocketStartBottomPct}%`,
-              left: isSmallScreen ? '50%' : undefined,
-              right: isSmallScreen ? undefined : `${rocketStartRightPct}%`,
+              left: undefined,
+              right: `${rocketStartRightPct}%`,
               transform: `translateX(-50%) translateX(0px) translateY(0px)`,
               width: '60px',
               height: '350px',
@@ -316,8 +316,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           background: 'linear-gradient(to right, #909090, #b0b0b0, #808080)',
           borderRadius: '15px 15px 6px 6px',
           boxShadow: 'inset -3px 0 8px rgba(0,0,0,0.1)',
-          opacity: getPartOpacity(0, 0.2),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         
         {/* Upper Stage */}
@@ -331,8 +330,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           background: 'linear-gradient(to right, #a0a0a0, #b8b8b8, #989898)',
           borderRadius: '12px 12px 4px 4px',
           boxShadow: 'inset -2px 0 6px rgba(0,0,0,0.1)',
-          opacity: getPartOpacity(0.5, 0.7),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         
         {/* Command Module Window */}
@@ -347,8 +345,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           borderRadius: '50%',
           border: '1px solid #2f3542',
           boxShadow: 'inset 1px 1px 3px rgba(255,255,255,0.5)',
-          opacity: getPartOpacity(0.7, 0.85),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         
         {/* Service Module Details */}
@@ -361,8 +358,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           height: '4px',
           background: '#57606f',
           borderRadius: '2px',
-          opacity: getPartOpacity(0.35, 0.5),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         <div style={{
           position: 'absolute',
@@ -373,8 +369,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           height: '4px',
           background: '#57606f',
           borderRadius: '2px',
-          opacity: getPartOpacity(0.35, 0.5),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         
         {/* Side Boosters */}
@@ -387,8 +382,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           background: 'linear-gradient(to right, #888888, #a0a0a0, #787878)',
           borderRadius: '6px 6px 3px 3px',
           boxShadow: 'inset -1px 0 4px rgba(0,0,0,0.1)',
-          opacity: getPartOpacity(0.2, 0.35),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         <div style={{
           position: 'absolute',
@@ -399,8 +393,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           background: 'linear-gradient(to right, #888888, #a0a0a0, #787878)',
           borderRadius: '6px 6px 3px 3px',
           boxShadow: 'inset -1px 0 4px rgba(0,0,0,0.1)',
-          opacity: getPartOpacity(0.2, 0.35),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         
         {/* Engine Nozzles */}
@@ -413,8 +406,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           height: '12px',
           background: 'linear-gradient(to bottom, #57606f, #2c2c54)',
           borderRadius: '9px 9px 3px 3px',
-          opacity: getPartOpacity(0.85, 1),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         <div style={{
           position: 'absolute',
@@ -424,8 +416,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           height: '8px',
           background: 'linear-gradient(to bottom, #57606f, #2c2c54)',
           borderRadius: '4px 4px 2px 2px',
-          opacity: getPartOpacity(0.85, 1),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         <div style={{
           position: 'absolute',
@@ -435,8 +426,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
           height: '8px',
           background: 'linear-gradient(to bottom, #57606f, #2c2c54)',
           borderRadius: '4px 4px 2px 2px',
-          opacity: getPartOpacity(0.85, 1),
-          transition: 'opacity 0.3s ease-out'
+          opacity: 1
         }} />
         
         {/* Main Engine Flame */}
