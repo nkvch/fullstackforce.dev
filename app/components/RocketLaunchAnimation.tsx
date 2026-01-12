@@ -101,7 +101,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
         setRocketStartRightPct(4);
         setMotionParams({
           initialVelocity: 0,
-          baseAcceleration: 0.001,
+          baseAcceleration: 0.02,
           accelerationGrowthRate: 0.0052,
           timeStep: 0.016,
         });
@@ -111,7 +111,7 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
         setRocketStartRightPct(4);
         setMotionParams({
           initialVelocity: 0,
-          baseAcceleration: 0.001,
+          baseAcceleration: 0.02,
           accelerationGrowthRate: 0.0052,
           timeStep: 0.016,
         });
