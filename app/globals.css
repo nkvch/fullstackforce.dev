@@ -1539,9 +1539,10 @@ body {
   background: transparent;  /*#0c0e1200*/ 
   transition: background-color 0.35s ease;
   backdrop-filter: blur(10px);
-  z-index: 100;
+  z-index: 2000;
   box-sizing: border-box;
   overflow: visible;
+  pointer-events: auto;
   -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
   mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
 }
@@ -1557,6 +1558,8 @@ body {
   background: rgba(12, 14, 18, 0.95) !important;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
 }
 
 .toolbar-links {
@@ -1823,6 +1826,8 @@ body {
   .toolbar {
     height: 55px;
     padding: 0 1rem;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
   }
   .toolbar .logo { font-size: 1.1rem; }
   .toolbar-links {
