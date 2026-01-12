@@ -3,10 +3,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 interface Particle {
-  id: number;
   x: number;
   y: number;
-  opacity: number;
+  vx: number;
+  vy: number;
+  size: number;
+  growth: number;
+  life: number;
+  maxLife: number;
+  colorStart: { r: number, g: number, b: number, a: number };
+  colorEnd: { r: number, g: number, b: number, a: number };
 }
 
 type MotionParams = {
@@ -33,9 +39,8 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
 }) => {
   const [mounted, setMounted] = useState(false);
   const [launchInitiated, setLaunchInitiated] = useState(false);
-  const [rocketPosition, setRocketPosition] = useState(0);
   const [showFlame, setShowFlame] = useState(false);
-  const [smokePlumes, setSmokePlumes] = useState<any[]>([]);
+  
   // responsive rocket base transform and start position
   const [rocketBaseScale, setRocketBaseScale] = useState(0.7);
   const [rocketStartBottomPct, setRocketStartBottomPct] = useState(-100); // Start off-screen
@@ -55,8 +60,11 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
   const rocketRef = useRef<HTMLDivElement | null>(null);
   const rocketInnerRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mainNozzleRef = useRef<HTMLDivElement | null>(null);
-  const smokePlumeId = useRef(0);
+  
+  // Particles system
+  const particles = useRef<Particle[]>([]);
 
   // Prevent hydration mismatch
   useEffect(() => {
@@ -66,8 +74,6 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
   useEffect(() => {
     if (mounted && launchTriggered && !launchInitiated) {
       setLaunchInitiated(true);
-      // Add a small delay to sync with the code typing "start()" completion if needed, 
-      // or just start immediately. The previous code had a 500ms delay.
       setTimeout(() => {
         startLaunchSequence();
       }, 500);
@@ -80,7 +86,15 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
     
     const applyResponsiveRocket = () => {
       const width = window.innerWidth;
+      const height = window.innerHeight;
       setIsSmallScreen(width <= 480);
+
+      // Resize canvas
+      if (canvasRef.current) {
+        canvasRef.current.width = width;
+        canvasRef.current.height = height;
+      }
+
       if (width <= 480) {
         setRocketBaseScale(0.4);
         setRocketStartBottomPct(-10);
@@ -130,44 +144,38 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
     let position = 0;
     let velocity = motionParams.initialVelocity;
     let time = 0;
-    let plumeCreationCount = 0;
-    const maxPlumes = window.innerWidth > 768 ? 80 : 100;
+    
+    const plumeInterval = window.innerWidth > 768 ? 60 : 150; // ms between puffs
     let lastPlumeTime = 0;
-    let previousXPos = 0;
 
     const animate = () => {
-      time += motionParams.timeStep; // Approximate frame time at 60fps
+      const ctx = canvasRef.current?.getContext('2d');
+      if (!ctx || !canvasRef.current) return;
+
+      time += motionParams.timeStep;
       
-      // Gradual acceleration that starts slow and increases over time
-      const acceleration = motionParams.baseAcceleration + (time * motionParams.accelerationGrowthRate); // Starts smaller, increases gradually
-      
+      const acceleration = motionParams.baseAcceleration + (time * motionParams.accelerationGrowthRate);
       velocity += acceleration;
       position += velocity;
 
-      // Calculate turn progress
-      const rotationStart = isSmallScreen ? 20 : 150; // Start turning earlier
-      const rotationRamp = isSmallScreen ? 2500 : 2000; // Much longer ramp - maintain curve throughout flight
+      // --- Rocket Physics & Trajectory ---
+      const rotationStart = isSmallScreen ? 20 : 150;
+      const rotationRamp = isSmallScreen ? 2500 : 2000;
       const turnEnd = rotationStart + rotationRamp;
-      
-      // Phase 1: Before turn (vertical flight)
-      // Phase 2: During turn (accelerating horizontally with smoothstep)  
-      // Phase 3: After turn (constant horizontal velocity)
       
       let xPos = 0;
       if (position <= rotationStart) {
-        xPos = 0; // No horizontal movement yet
+        xPos = 0;
       } else if (position <= turnEnd) {
         const rawTilt = (position - rotationStart) / rotationRamp;
         const smoothTurn = rawTilt * rawTilt * (3 - 2 * rawTilt);
         xPos = -position * horizontalFactor * smoothTurn;
       } else {
-        // After turn: constant horizontal velocity
-        const turnEndXPos = -turnEnd * horizontalFactor * 1; // smoothTurn(1) = 1
+        const turnEndXPos = -turnEnd * horizontalFactor * 1;
         const distanceAfterTurn = position - turnEnd;
         xPos = turnEndXPos - distanceAfterTurn * horizontalFactor;
       }
       
-      // Same for future position
       const futurePosition = position + 30;
       let futureXPos = 0;
       if (futurePosition <= rotationStart) {
@@ -183,13 +191,10 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
       }
       
       const deltaX = futureXPos - xPos;
-      const deltaY = -30; // lookAhead distance
+      const deltaY = -30;
       const dynamicAngle = Math.atan2(deltaX, -deltaY) * 180 / Math.PI;
       
-      previousXPos = xPos;
-
-      // Directly update DOM instead of React state for better performance
-      // Separate positioning from rotation for natural movement
+      // Update DOM
       if (rocketRef.current) {
         rocketRef.current.style.transform = `translateX(-50%) translateX(${xPos}px) translateY(-${position}px)`;
       }
@@ -197,72 +202,115 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
         rocketInnerRef.current.style.transform = `rotate(${dynamicAngle}deg) scale(${rocketBaseScale})`;
       }
 
+      // --- Canvas Smoke Rendering ---
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+      // Spawn new particles
       const currentTime = performance.now();
-      
-      if (currentTime - lastPlumeTime > 80 && plumeCreationCount < maxPlumes) { // 80ms interval (less frequent)
-        const id = smokePlumeId.current++;
-        const side = (Math.random() > 0.5) ? 1 : -1;
-        const containerRect = containerRef.current?.getBoundingClientRect();
+      if (currentTime - lastPlumeTime > plumeInterval) {
         const rocketRect = rocketRef.current?.getBoundingClientRect();
         const nozzleRect = mainNozzleRef.current?.getBoundingClientRect();
+        
+        // Prefer exact nozzle position if available, fallback to rocket center
+        if (nozzleRect) {
+             const nozzleCenterX = nozzleRect.left + nozzleRect.width / 2;
+             const nozzleCenterY = nozzleRect.top + nozzleRect.height / 2;
 
-        let nozzleX = 0;
-        let nozzleY = 0;
-        if (containerRect) {
-          if (nozzleRect) {
-            nozzleX = nozzleRect.left + nozzleRect.width / 2 - containerRect.left;
-            nozzleY = nozzleRect.bottom - containerRect.top;
-          } else if (rocketRect) {
-            nozzleX = rocketRect.left + rocketRect.width / 2 - containerRect.left;
-            nozzleY = rocketRect.bottom - containerRect.top;
-          }
+             // Ejection velocity vector (opposite to rocket heading)
+             const rad = dynamicAngle * (Math.PI / 180);
+             const ejectionSpeed = 2 + Math.random() * 2;
+             const vx = -ejectionSpeed * Math.sin(rad);
+             const vy = ejectionSpeed * Math.cos(rad);
+
+             // Offset spawn point relative to rocket rotation
+             const spawnOffset = 20; // px distance "down" from nozzle center
+             const sideOffset = isSmallScreen ? 0 : 12; // px distance "sideways"
+             
+             // Rotate the local offset vector (sideOffset, spawnOffset) by dynamicAngle
+             const offsetX = (sideOffset * Math.cos(rad)) - (spawnOffset * Math.sin(rad));
+             const offsetY = (sideOffset * Math.sin(rad)) + (spawnOffset * Math.cos(rad));
+
+             const spread = isSmallScreen ? 10 : 20;
+
+             particles.current.push({
+               x: nozzleCenterX + offsetX + (Math.random() - 0.5) * spread,
+               y: nozzleCenterY + offsetY + (Math.random() - 0.5) * spread,
+               vx: vx + (Math.random() - 0.5) * 1,
+               vy: vy + (Math.random() - 0.5) * 1,
+               size: isSmallScreen ? 20 : 30,
+               growth: isSmallScreen ? 0.8 : 1.2,
+               life: 0,
+               maxLife: isSmallScreen ? 150 : 200, 
+               colorStart: { r: 124, g: 58, b: 237, a: 0.6 },
+               colorEnd: { r: 187, g: 155, b: 227, a: 0 },
+             });
         }
-
-        const wrapperStyle = {
-          position: 'absolute' as const,
-          left: `${nozzleX}px`,
-          top: `${nozzleY}px`,
-          transform: `rotate(${dynamicAngle}deg)`,
-          transformOrigin: 'top center',
-          zIndex: 145
-        };
-
-        const childStyle = {
-          width: `${(isSmallScreen ? 40 : 100) + Math.random() * (isSmallScreen ? 40 : 100)}px`,
-          height: `${(isSmallScreen ? 40 : 100) + Math.random() * (isSmallScreen ? 40 : 100)}px`,
-          background: isSmallScreen
-            ? 'radial-gradient(circle, rgba(124, 58, 237, 0.43) 0%, rgba(187, 155, 227, 0.31) 70%)'
-            : 'radial-gradient(circle, rgba(124, 58, 237, 0.14) 0%, rgba(187, 155, 227, 0.13) 70%)',
-          borderRadius: '50%',
-          filter: isSmallScreen ? 'blur(12px)' : 'blur(20px)',
-          animation: `smoke-drift-${side === 1 ? 'right' : 'left'} ${3 + Math.random() * 1}s ease-out forwards`
-        } as React.CSSProperties;
-
-        setSmokePlumes((prev: any[]) => [...prev, { id, wrapperStyle, childStyle }]);
-
-        setTimeout(() => {
-            setSmokePlumes((prev: any[]) => prev.filter(p => p.id !== id));
-        }, 6000);
-
+        else if (rocketRect) {
+          // Fallback if nozzle ref is missing (should not happen)
+          const centerX = rocketRect.left + rocketRect.width / 2;
+          const centerY = rocketRect.bottom - (rocketRect.height * 0.1); 
+          
+          const spread = isSmallScreen ? 10 : 20;
+          particles.current.push({
+            x: centerX + (Math.random() - 0.5) * spread,
+            y: centerY,
+            vx: (Math.random() - 0.5) * 2,
+            vy: 2 + Math.random() * 2,
+            size: isSmallScreen ? 20 : 30,
+            growth: isSmallScreen ? 0.8 : 1.2,
+            life: 0,
+            maxLife: isSmallScreen ? 150 : 200,
+            colorStart: { r: 124, g: 58, b: 237, a: 0.6 },
+            colorEnd: { r: 187, g: 155, b: 227, a: 0 },
+          });
+        }
         lastPlumeTime = currentTime;
-        plumeCreationCount++;
       }
 
-      if (position < window.innerHeight + 250) {
+      // Update and Draw Particles
+      for (let i = particles.current.length - 1; i >= 0; i--) {
+        const p = particles.current[i];
+        p.life++;
+        
+        if (p.life >= p.maxLife) {
+          particles.current.splice(i, 1);
+          continue;
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.size += p.growth;
+        p.vy *= 0.98; // Friction
+
+        // Calculate current alpha/color
+        const progress = p.life / p.maxLife;
+        const alpha = p.colorStart.a * (1 - progress);
+        
+        // Draw
+        ctx.beginPath();
+        // Create radial gradient for soft smoke look
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+        gradient.addColorStop(0, `rgba(${p.colorStart.r}, ${p.colorStart.g}, ${p.colorStart.b}, ${alpha})`);
+        gradient.addColorStop(1, `rgba(${p.colorEnd.r}, ${p.colorEnd.g}, ${p.colorEnd.b}, 0)`);
+        
+        ctx.fillStyle = gradient;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (position < window.innerHeight + 300) { // Keep animating a bit longer to let smoke dissipate
         animationRef.current = requestAnimationFrame(animate);
       } else {
-        onLaunchComplete();
+        // Continue animation just for smoke dissipation if particles exist
+        if (particles.current.length > 0) {
+             animationRef.current = requestAnimationFrame(animate); 
+        } else {
+             onLaunchComplete();
+        }
       }
     };
 
     animate();
-  };
-
-  // Calculate opacity for each rocket part based on build progress
-  const getPartOpacity = (startProgress: number, endProgress: number) => {
-    if (buildProgress < startProgress) return 0;
-    if (buildProgress >= endProgress) return 1;
-    return (buildProgress - startProgress) / (endProgress - startProgress);
   };
 
   return (
@@ -274,9 +322,22 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
         position: 'relative',
         background: 'transparent',
         fontFamily: 'Courier New, monospace',
-        overflow: 'visible',
+        overflow: 'hidden', // Contain canvas
       }}
     >
+      <canvas 
+        ref={canvasRef}
+        style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+            zIndex: 140
+        }}
+      />
+      
       {mounted && (
         <>
           {/* Rocket */}
@@ -476,26 +537,11 @@ const RocketLaunchAnimation: React.FC<RocketLaunchAnimationProps> = ({
       </div>
       </>
     )}
-      
-      {mounted && smokePlumes.map(plume => (
-        <div key={plume.id} style={plume.wrapperStyle}>
-          <div style={plume.childStyle} />
-        </div>
-      ))}
 
       <style jsx>{`
         @keyframes flicker {
           0% { transform: translateX(-50%) scaleY(1); }
           100% { transform: translateX(-50%) scaleY(1.2); }
-        }
-        
-        @keyframes smoke-drift-left {
-          from { transform: translate(-50%, 0) scale(0.2); opacity: 1; }
-          to { transform: translate(-200%, 250px) scale(3.2); opacity: 0; }
-        }
-        @keyframes smoke-drift-right {
-          from { transform: translate(-50%, 0) scale(0.2); opacity: 1; }
-          to { transform: translate(80%, 250px) scale(3.2); opacity: 0; }
         }
       `}</style>
       
