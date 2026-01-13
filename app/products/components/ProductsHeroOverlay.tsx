@@ -16,7 +16,7 @@ export default function ProductsHeroOverlay({
   ctaHref = "#demo"
 }: ProductsHeroOverlayProps) {
   return (
-    <div className="products-overlay" aria-hidden="true">
+    <div className="products-overlay">
       <div className="products-overlay-inner">
         <div className="hero-kicker">
           <span className="status-dot" aria-hidden="true"></span>

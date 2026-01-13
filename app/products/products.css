@@ -280,6 +280,7 @@
   color: #012343;
   text-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
   margin: 0 0 1rem;
+  pointer-events: auto;
 }
 
 .products .products-overlay-subtitle {
@@ -288,6 +289,7 @@
   line-height: 1.35;
   color: #5b5b5c;
   text-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  pointer-events: auto;
 }
 
 .products .highlight-word {
