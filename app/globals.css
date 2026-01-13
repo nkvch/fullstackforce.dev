@@ -1445,8 +1445,8 @@ body {
 }
 
 .team-card:hover {
-  /*transform: translateY(-5px);*/
-  box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(124, 58, 237, 0.2), 0 0 20px 2px rgba(124, 58, 237, 0.15);
 }
 
 .orb-container {
@@ -1517,15 +1517,7 @@ body {
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
-.team-card:hover .team-photo-wrapper {
-  transform: scale(1.2);
-  box-shadow: 0 0 15px 3px #7c3aed8c;
-}
-
 @media (max-width: 480px) {
-  .team-card:hover .team-photo-wrapper {
-    transform: scale(1.1);
-  }
 }
 
 .team-photo {
