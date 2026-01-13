@@ -1,10 +1,30 @@
-import React from 'react';
+"use client";
+import React, { useEffect, useRef, useState } from 'react';
 import './InfoDotDiagram.css';
 
 export default function InfoDotDiagram() {
+    const rootRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+        if (!rootRef.current) return;
+
+        const observer = new ResizeObserver((entries) => {
+            for (let entry of entries) {
+                const width = entry.contentRect.width;
+                // Baseline is 1000px
+                const newScale = width / 1000;
+                setScale(newScale);
+            }
+        });
+
+        observer.observe(rootRef.current);
+        return () => observer.disconnect();
+    }, []);
+
     return (
-        <div className="infodot-diagram-root">
-            <div className="diagram-stage">
+        <div className="infodot-diagram-root" ref={rootRef} style={{ height: 420 * scale }}>
+            <div className="diagram-stage" style={{ transform: `scale(${scale})` }}>
                 {/* connector lines */}
                 <svg className="diagram-links" viewBox="0 0 1000 420" preserveAspectRatio="none" aria-hidden="true">
                     <defs>
@@ -70,11 +90,6 @@ export default function InfoDotDiagram() {
                         alt="InfoDot"
                         className="diagram-dot-image"
                     />
-
-                    {/*<div className="diagram-keypill">
-                        <div className="k">Key Value</div>
-                        <div className="v">123456</div>
-                    </div>*/}
                 </div>
             </div>
         </div>
