@@ -17,6 +17,7 @@ import Orb from "./components/GlowingCircle";
 import LogoCarousel from "./components/LogoCarousel";
 import FlipCard from "./components/FlipCard";
 import ExploreProjectsCard from "./components/ExploreProjectsCard";
+import Footer from "./components/Footer";
 
 export default function Home() {
   const missionRef = useRef(null);
@@ -566,6 +567,7 @@ export default function Home() {
 
         {/* for let's talk button */}
         <div id="page-bottom" className="page-anchor" />
+        <Footer />
       </main>
     </>
   );
