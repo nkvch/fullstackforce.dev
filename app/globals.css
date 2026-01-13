@@ -1068,7 +1068,8 @@ body {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.01em;
 }
 
 .service-card .icon {
@@ -1231,6 +1232,14 @@ body {
   margin-bottom: 2rem;
   margin-top: 1.5rem;
   pointer-events: none;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.01em;
+}
+
+/* FlipCard заголовки */
+.group h3 {
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.01em;
 }
 
 .card-content-wrapper {
@@ -1552,11 +1561,16 @@ body {
   color: #1c2028;
   margin-top: 1.25rem;
   margin-bottom: 0.25rem;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.01em;
 }
 
 .team-role {
   font-size: 0.95rem;
   color: #4A5568;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .toolbar {
