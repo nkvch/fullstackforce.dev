@@ -1847,17 +1847,19 @@ body {
 
 .mobile-menu ul li a {
   display: block;
-  padding: 1.2rem 2rem;
+  padding: 0;
   margin: 0 1.5rem;
   color: #fff;
   text-decoration: none;
   font-size: 1.3rem;
   font-weight: 500;
-  transition: all 0.25s ease;
-  border-radius: 2rem;
-  background: rgba(146, 71, 237, 0.185);
-  border: 1px solid rgba(146, 71, 237, 0.185);
+  background: none;
+  border: none;
+  border-radius: 0;
+  transition: color 0.25s ease;
+  margin-bottom: 1.5rem;
 }
+
 
 .mobile-menu ul li a:hover {
   background: rgba(124, 58, 237, 0.15);
