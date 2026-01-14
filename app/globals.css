@@ -103,7 +103,6 @@ body {
   font-size: 1em;
   font-weight: 400;
   color: #c6b7e4;
-  opacity: 0;
   text-shadow: 
     0 0 5px rgba(182, 102, 255, 0.5),
     0 0 10px rgba(182, 102, 255, 0.3),
@@ -184,9 +183,9 @@ body {
 .slogan-text {
   position: absolute;
   bottom: 0.65rem;
-  font-family: 'Courier New', monospace;
-  font-size: 1.4rem;
-  font-weight: lighter;
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-size: 1.25rem;
+  font-weight: 500;
   line-height: 1;
   color: #ffffff9f;
   background: none;
