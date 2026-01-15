@@ -462,6 +462,9 @@ export default function Home() {
               <p>No juniors, no BS — just senior devs.</p>
               <p>We speak business and code.</p>
               <p>Fast ramp-up. Proven delivery.</p>
+              <div className="why-work-image">
+                <img src="/us.png" alt="FullStackForce Team" />
+              </div>
             </div>
             {/* Aurora at bottom - upside down */}
             <Aurora
