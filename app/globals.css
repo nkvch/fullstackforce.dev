@@ -1769,6 +1769,12 @@ body {
   pointer-events: none;
 }
 
+@media (max-width: 768px) {
+  .aurora-container-bottom {
+    height: 7%;
+  }
+}
+
 
 /*Mobile Menu*/
 .mobile-menu-button {
