@@ -565,4 +565,8 @@
   .products .stats-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .products .section-how-it-works {
+    padding-bottom: 150px;
+  }
 }
